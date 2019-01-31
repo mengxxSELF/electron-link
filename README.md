@@ -2,6 +2,8 @@
 
 > An electron-vue project
 
+![img](https://user-gold-cdn.xitu.io/2019/1/31/168a3c71604178d6?w=913&h=465&f=png&s=54866)
+
 #### Build Setup
 
 ``` bash
@@ -13,13 +15,3 @@ npm run dev
 
 # build electron application for production
 npm run build
-
-
-# lint all JS/Vue component files in `src/`
-npm run lint
-
-```
-
----
-
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[8fae476](https://github.com/SimulatedGREG/electron-vue/tree/8fae4763e9d225d3691b627e83b9e09b56f6c935) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).

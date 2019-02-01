@@ -16,9 +16,7 @@
 <script>
 import Table from './Table';
 import Form from './Form';
-const path = require('path');
-const fs = require('fs');
-const configRoot = path.resolve('/tmp/config.json');
+import { isExist, getConfig, updateConfig } from './action.js';
 
 export default {
   name: 'main',
@@ -34,25 +32,22 @@ export default {
   },
   mounted() {
     // 读取用户本地有没有 /tmp/
-    const isEixst = fs.existsSync(configRoot);
-    if (!isEixst) {
-      return;
-    }
-    const result = JSON.parse(fs.readFileSync(configRoot, 'utf-8'));
+    const isEixst = isExist();
+    if (!isEixst) return;
+    const result = getConfig();
     this.tableData = result;
     window.localStorage.setItem('tableData', JSON.stringify(result));
   },
   methods: {
     // 删除
     deleteContent({
-      id, title, type, address,
+      id,
     }) {
-      console.log(id, title, type, address);
       // 文件中删除
-      const result = JSON.parse(fs.readFileSync(configRoot, 'utf-8'));
+      const result = getConfig();
       const newData = result.filter(({ id: myId }) => myId !== id);
       this.tableData = newData;
-      fs.writeFileSync(configRoot, JSON.stringify(newData), 'utf-8');
+      updateConfig(newData);
       window.localStorage.setItem('tableData', JSON.stringify(newData));
     },
     // 编辑
@@ -60,13 +55,13 @@ export default {
       id, title, address,
     }) {
       // 变更配置
-      const result = JSON.parse(fs.readFileSync(configRoot, 'utf-8'));
+      const result = getConfig();
       const targetIndex = result.findIndex(({ id: myId }) => myId === id);
       const target = result[targetIndex];
       target.title = title;
       target.address = address;
       this.tableData = result;
-      fs.writeFileSync(configRoot, JSON.stringify(result), 'utf-8');
+      updateConfig(result);
     },
     showModal() {
       this.isShow = true;

@@ -20,9 +20,7 @@
 </template>
 
 <script>
-const fs = require('fs');
-const path = require('path');
-const configRoot = path.resolve('/tmp/config.json');
+import { isExist, getConfig, updateConfig } from './action.js';
 
 export default {
   data() {
@@ -85,19 +83,18 @@ export default {
       //   return;
       // }
       const content = { address, type, title };
-      const isEixst = fs.existsSync(configRoot);
       let info = null;
-      if (isEixst) {
+      if (isExist()) {
         // 如果已经存在该文件
-        const result = JSON.parse(fs.readFileSync(configRoot, 'utf-8'));
+        const result = getConfig();
         const newId = result.length ? Number(result[result.length - 1].id) + 1 : 0;
         info = { id: newId, ...content };
         result.push(info);
-        fs.writeFileSync(configRoot, JSON.stringify(result), 'utf-8');
+        updateConfig(result);
       } else {
         // 不存在 直接写入
         info = [{ id: 0, ...content }];
-        fs.writeFileSync(configRoot, JSON.stringify(info), 'utf-8');
+        updateConfig(info);
       }
 
       // 将表单信息写入本地

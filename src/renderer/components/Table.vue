@@ -38,11 +38,11 @@
       </template>
       </el-table-column>
     </el-table>
-    <el-dialog title="编辑服务器信息" :visible.sync="dialogFormVisible">
+    <el-dialog width='80%' title="编辑服务器信息" :visible.sync="dialogFormVisible">
       <el-form :model="form">
         <h4> 服务器id -- {{form.id}} </h4>
         <el-form-item label="服务器名称" >
-          <el-input  v-model="form.title" autocomplete="off"></el-input>
+          <el-input v-model="form.title" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="服务器地址" >
           <el-input v-model="form.address" autocomplete="off"></el-input>
@@ -57,6 +57,7 @@
 </template>
 
 <script>
+
 // import axios from 'axios';
 const { exec } = require('child_process');
 const fs = require('fs');
@@ -173,4 +174,5 @@ div {
   .success-row {
     background: #f0f9eb;
   }
+
 </style>

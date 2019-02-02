@@ -20,7 +20,7 @@
       label="类型"
       width="180">
       <template slot-scope="scope">
-        <span style="margin-left: 10px"> {{ scope.row.type ? 'mysql' : 'redis' }}</span>
+        <span style="margin-left: 10px"> {{ Number(scope.row.type) ? 'mysql' : 'redis' }}</span>
       </template>
     </el-table-column>
     <el-table-column
@@ -57,13 +57,7 @@
 </template>
 
 <script>
-
-// import axios from 'axios';
-const { exec } = require('child_process');
-const fs = require('fs');
-const path = require('path');
-const shRoot = path.resolve('/tmp/run.sh');
-// const configRoot = path.resolve('/tmp/config.json');
+import { linkServer } from './action';
 
 export default {
   name: 'table',
@@ -121,33 +115,7 @@ export default {
         cancelButtonText: '取消',
         type: 'info',
       }).then(() => {
-        // 1  生成 run.sh 文件
-        // 根据类型判断
-        let server = '';
-        if (type === 0) {
-          // 0 redis
-          server += 'redis-cli -h';
-        } else {
-          // 1 msyql
-          server += 'ssh';
-        }
-
-        // 不用判断文件是否存在 直接重新写入
-        const content = `#!/bin/bash \n  \n ${server} ${address}`;
-
-        // 链接服务器
-        fs.writeFileSync(shRoot, content);
-        // 2 给脚本增加运行权限
-        exec(`chmod +x ${shRoot}`, { silent: true });
-        // 3 打开一个新的终端去执行这文件
-        exec(`open -a Terminal  ${shRoot}`, (error, stdout, stderr) => {
-          if (error) {
-            console.error(`error: ${error}`);
-            return;
-          }
-          console.log(`stdout: ${stdout}`);
-          console.log(`stderr: ${typeof stderr}`);
-        });
+        linkServer({ address, type });
       }).catch((e) => {
         console.log('e', e);
         this.$message({

@@ -3,7 +3,7 @@ const path = require('path');
 const shRoot = path.resolve('/tmp/run.sh');
 const fs = require('fs');
 const configRoot = path.resolve('/tmp/config.json');
-
+const urllib = require('urllib');
 
 // 读取用户本地有没有 /tmp/
 export const isExist = () => fs.existsSync(configRoot);
@@ -44,3 +44,26 @@ export const linkServer = ({ type, address }) => {
     console.log(`stderr: ${typeof stderr}`);
   });
 };
+
+const prefix = 'localhost:7758/hd/';
+// const prefix = 'http://6k.blued.cn/hd';
+
+// 获取所有已有的共享数据
+export const getGroups = async ({ group }) => {
+  const url = `${prefix}/config?group=${group}`;
+  const result = await urllib.requestThunk(url);
+  console.log(result, 'result');
+  return result;
+};
+
+// 写入到远程
+export const addSystem = (data) => {
+  //
+  const url = `${prefix}/add`;
+  const data2 = { };
+  console.log('data2', data2, data, url);
+  return 200;
+};
+
+// 删除远程
+

@@ -12,6 +12,17 @@
         <el-option label="redis" value="0"></el-option>
       </el-select>
     </el-form-item>
+    <el-form-item label="环境">
+      <el-select v-model="env" placeholder="请选择环境">
+        <el-option label="测试环境" value="test"></el-option>
+        <el-option label="线上环境" value="pro"></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item label="分组">
+      <el-select v-model="group" placeholder="是否将其添加到某一个组">
+        <el-option v-for="item in groups" :key="item.index" :label="item.title" :value="item.index"></el-option>
+      </el-select>
+    </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submit">确认添加配置</el-button>
       <el-button @click="$emit('hideForm')">取消</el-button>
@@ -20,15 +31,21 @@
 </template>
 
 <script>
-import { isExist, getConfig, updateConfig } from './action.js';
+import { isExist, getConfig, updateConfig, getGroups, addSystem } from './action.js';
 
 export default {
   data() {
     return {
       title: '',
       address: '',
-      type: '',
+      type: 'mysql',
+      group: '本配置不共享, 不添加到分组',
+      groups: [],
+      env: 'test',
     };
+  },
+  mounted() {
+    this.groups = getGroups();
   },
   methods: {
     // 检测地址是否已经存在
@@ -61,11 +78,13 @@ export default {
       }
     },
     submit() {
-      const { address, title, type } = this;
+      const {
+        address, title, type, env, group,
+      } = this;
       // 空值判断
-      if (!address || !title || !type) {
+      if (!address || !title || !type || !env) {
         this.$message({
-          message: `该 ${!address && '地址'} ${!title && '名称'} ${!type && '类型'} 为空 请添加内容`,
+          message: `该 ${!address && '地址'} ${!title && '名称'} 为空 请补充完整`,
           type: 'success',
         });
         return;
@@ -82,7 +101,16 @@ export default {
       //   });
       //   return;
       // }
-      const content = { address, type, title };
+      const content = {
+        address, type, title, env,
+      };
+
+      // 判断如果是 有group 则直接写入mysql表中
+      if (group && group > 0) {
+        addSystem(content);
+        return;
+      }
+
       let info = null;
       if (isExist()) {
         // 如果已经存在该文件
@@ -112,7 +140,7 @@ export default {
 
 <style scoped>
   div {
-    width: 50%;
+    width: 80%;
     margin: 0 auto 10px;
   }
 </style>

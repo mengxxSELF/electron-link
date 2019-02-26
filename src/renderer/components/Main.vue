@@ -2,9 +2,18 @@
   <div class="main">
     <img width='200' src='https://user-gold-cdn.xitu.io/2019/1/31/168a3be6330a9955?w=519&h=412&f=png&s=115516'/>
     <h4> 一键链接服务器 </h4>
-    <el-button type="text" @click="showModal" v-on:hideForm="hideModal">增加配置</el-button>
-    <div></div>
-    <Form v-if="isShow" v-on:hideForm="hideModal" ></Form>
+
+    <el-button type="primary" @click="showForm = true; showGroup = false">增加配置</el-button>
+    <AddGroup />
+
+    <el-button @click="showGroup = !showGroup"> {{ showGroup ? '关闭分组' : '查看已有分组' }}  </el-button>
+    <Groups v-show="showGroup" />
+
+    <el-dialog title="添加配置" :visible.sync="showForm">
+      <Form v-on:hideForm="hideModal" ></Form>
+    </el-dialog>
+
+    <p> 用户本地 </p>
     <Table 
       v-bind:tableData="tableData" 
       v-on:deleteContent="deleteContent"
@@ -16,21 +25,29 @@
 <script>
 import Table from './Table';
 import Form from './Form';
-import { isExist, getConfig, updateConfig } from './action.js';
+import Groups from './Groups';
+import AddGroup from './AddGroup';
+import { isExist, getConfig, updateConfig, getGroups } from './action.js';
 
 export default {
   name: 'main',
   data() {
     return {
-      isShow: false,
+      showForm: false,
+      showGroup: false,
       tableData: [],
+      groups: [],
+      groupsItem: [],
     };
   },
   components: {
     Table,
     Form,
+    Groups,
+    AddGroup,
   },
   mounted() {
+    this.groups = getGroups();
     // 读取用户本地有没有 /tmp/
     const isEixst = isExist();
     if (!isEixst) return;
@@ -39,6 +56,11 @@ export default {
     window.localStorage.setItem('tableData', JSON.stringify(result));
   },
   methods: {
+    // 展示某一个组的数据
+    showGroups(index) {
+      const result = getGroups();
+      this.groupsItem = result.find(item => item.index === index).data;
+    },
     // 删除
     deleteContent({
       id,
@@ -71,7 +93,7 @@ export default {
         // 添加服务器 -- 直接将本地数据进行添加 不进行新的请求
         this.tableData.push(info);
       }
-      this.isShow = false;
+      this.showForm = false;
     },
   },
 };

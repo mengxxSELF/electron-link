@@ -29,4 +29,3 @@ npm run build:darwin
 #### Question 
 
 * 目前发现在window中不可用 因为直接将文件存在 /tmp 这个路径里 但是在window中不存在这个路径 就会报错
-

@@ -1,7 +1,7 @@
 {
   "name": "vvbuild",
   "productName": "vvbuild",
-  "version": "0.0.1",
+  "version": "2.0.0",
   "author": "mengxxSELF <2473536678@qq.com>",
   "description": "An electron-vue project",
   "license": null,
@@ -25,8 +25,10 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "koa": "^2.6.2",
+    "electron": "^2.0.16",
+    "electron-builder": "^20.38.5",
     "element-ui": "^2.4.11",
+    "koa": "^2.6.2",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
@@ -37,6 +39,7 @@
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
+    "os": "^0.1.1",
     "ajv": "^6.5.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.3",
@@ -58,6 +61,7 @@
     "electron-devtools-installer": "^2.2.4",
     "electron-packager": "^12.1.0",
     "electron-rebuild": "^1.8.1",
+    "electron-updater": "^4.0.6",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-friendly-formatter": "^4.0.1",

@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import { ipcRenderer } from 'electron';
 import Table from './Table';
 import Form from './Form';
 import { isExist, getConfig, updateConfig } from './action.js';
@@ -37,6 +38,9 @@ export default {
     const result = getConfig();
     this.tableData = result;
     window.localStorage.setItem('tableData', JSON.stringify(result));
+
+    // version
+    ipcRenderer.on('checkVersion');
   },
   methods: {
     // 删除

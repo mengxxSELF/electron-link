@@ -5,8 +5,15 @@
 </template>
 
 <script>
+import { ipcRenderer } from 'electron'; // eslint-disable-line
+
 export default {
   name: 'App',
+  methods: {
+    autoUpdate() {
+      ipcRenderer.send('update');
+    },
+  },
 };
 </script>
 

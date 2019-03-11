@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <img width='200' src='https://user-gold-cdn.xitu.io/2019/1/31/168a3be6330a9955?w=519&h=412&f=png&s=115516'/>
-    <h4> 一键链接服务器 </h4>
+    <h4 @click="update" > 一键链接服务器 </h4>
     <el-button type="text" @click="showModal" v-on:hideForm="hideModal">增加配置</el-button>
     <div></div>
     <Form v-if="isShow" v-on:hideForm="hideModal" ></Form>
@@ -14,10 +14,17 @@
 </template>
 
 <script>
-import { ipcRenderer } from 'electron';
+import electron from 'electron';
 import Table from './Table';
 import Form from './Form';
 import { isExist, getConfig, updateConfig } from './action.js';
+
+const { ipcRenderer } = electron;
+
+console.log('mmm');
+// ipcRenderer.on('send2', () => {
+//   console.log(' dddddddddddddddddddddddd ');
+// });
 
 export default {
   name: 'main',
@@ -39,10 +46,18 @@ export default {
     this.tableData = result;
     window.localStorage.setItem('tableData', JSON.stringify(result));
 
+    // ipcRenderer.on('send2', () => {
+    //   console.log(' dddddddddddddddddddddddd ');
+    // });
     // version
-    ipcRenderer.on('checkVersion');
+    // console.log('checkVersion - checkVersion');
+    // ipcRenderer.send('checkVersion', '111');
   },
   methods: {
+    update() {
+      console.log('checkVersion - checkVersion');
+      ipcRenderer.send('checkVersion', '111');
+    },
     // 删除
     deleteContent({
       id,

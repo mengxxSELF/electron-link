@@ -35,7 +35,14 @@ function createWindow() {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
+  
 }
+
+mainWindow.webContents.send('send2', 111)
+
+mainWindow.webContents.on('checkVersion', () => {
+  console.log('检查版本 -- 检查版本 检查版本');
+});
 
 app.on('ready', createWindow);
 
@@ -52,6 +59,9 @@ app.on('activate', () => {
 });
 
 
-ipcMain.on('checkVersion', function(event) {
-  event.sender.send('send back 主进程接受到消息了');
+ipcMain.on('checkVersion', () => {
+  console.log('检查版本 -- 检查版本 检查版本');
+  // event.sender.send('send back 主进程接受到消息了');
 });
+
+

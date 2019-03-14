@@ -3,7 +3,7 @@ const path = require('path');
 const shRoot = path.resolve('/tmp/run.sh');
 const fs = require('fs');
 const configRoot = path.resolve('/tmp/config.json');
-
+const axios = require('axios')
 
 // 读取用户本地有没有 /tmp/
 export const isExist = () => fs.existsSync(configRoot);
@@ -44,3 +44,8 @@ export const linkServer = ({ type, address }) => {
     console.log(`stderr: ${typeof stderr}`);
   });
 };
+
+// 检测 分组
+export const get_groups = () => {
+  return axios.get('http://localhost:3890/electron/config')
+}

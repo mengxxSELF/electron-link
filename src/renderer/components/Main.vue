@@ -3,7 +3,10 @@
     <img width='200' src='https://user-gold-cdn.xitu.io/2019/1/31/168a3be6330a9955?w=519&h=412&f=png&s=115516'/>
     <h4 @click="update" > 一键链接服务器 </h4>
     <el-button type="text" @click="showModal" v-on:hideForm="hideModal">增加配置</el-button>
-    <div></div>
+    <div v-show="canUpdate">
+      <p> 已有新版本 </p>
+      <el-button type="primary">下载最新版</el-button>
+    </div>
     <Form v-if="isShow" v-on:hideForm="hideModal" ></Form>
     <Table 
       v-bind:tableData="tableData" 
@@ -14,17 +17,10 @@
 </template>
 
 <script>
-import electron from 'electron';
+import { ipcRenderer } from 'electron';
 import Table from './Table';
 import Form from './Form';
-import { isExist, getConfig, updateConfig } from './action.js';
-
-const { ipcRenderer } = electron;
-
-console.log('mmm');
-// ipcRenderer.on('send2', () => {
-//   console.log(' dddddddddddddddddddddddd ');
-// });
+import { isExist, getConfig, updateConfig, get_groups } from './action.js';
 
 export default {
   name: 'main',
@@ -32,6 +28,7 @@ export default {
     return {
       isShow: false,
       tableData: [],
+      canUpdate: false
     };
   },
   components: {
@@ -45,18 +42,29 @@ export default {
     const result = getConfig();
     this.tableData = result;
     window.localStorage.setItem('tableData', JSON.stringify(result));
-
-    // ipcRenderer.on('send2', () => {
-    //   console.log(' dddddddddddddddddddddddd ');
-    // });
+    // 监听主进程中返回信息
+    ipcRenderer.on('version', (_, canUpdate) => {
+      // console.log('version', event, canUpdate);
+      this.canUpdate = canUpdate
+    });
     // version
     // console.log('checkVersion - checkVersion');
-    // ipcRenderer.send('checkVersion', '111');
+    ipcRenderer.send('checkVersion');
+
+    // 查询分组
+    ipcRenderer.send('getGroup');
+
+    // get_groups().then((data) => {
+    //   console.log(data)
+    // }).catch((e) => {
+    //   console.log('e', e)
+    // })
+
   },
   methods: {
     update() {
       console.log('checkVersion - checkVersion');
-      ipcRenderer.send('checkVersion', '111');
+      ipcRenderer.send('checkVersion');
     },
     // 删除
     deleteContent({

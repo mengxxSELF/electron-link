@@ -3,7 +3,7 @@ const path = require('path');
 const shRoot = path.resolve('/tmp/run.sh');
 const fs = require('fs');
 const configRoot = path.resolve('/tmp/config.json');
-const axios = require('axios')
+const axios = require('axios');
 
 // 读取用户本地有没有 /tmp/
 export const isExist = () => fs.existsSync(configRoot);
@@ -46,6 +46,32 @@ export const linkServer = ({ type, address }) => {
 };
 
 // 检测 分组
-export const get_groups = () => {
-  return axios.get('http://localhost:3890/electron/config')
-}
+export const get_groups = ({ group = '' }) => axios.get(`http://localhost:7758/electron/config?group=${group}`);
+
+export const add_config = (content) => {
+  axios({
+    method: 'post',
+    url: 'http://localhost:7758/electron/config',
+    data: content,
+  });
+};
+
+export const delete_config = (id) => {
+  axios({
+    method: 'get',
+    url: `http://localhost:7758/electron/delete?id=${id}`,
+  });
+};
+
+export const edit_config = (content) => {
+  axios({
+    method: 'post',
+    url: 'http://localhost:7758/electron/edit',
+    data: content,
+  });
+};
+
+export const check_version = () => axios({
+  method: 'get',
+  url: 'http://localhost:7758/electron/version',
+});

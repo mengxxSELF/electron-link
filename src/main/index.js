@@ -1,7 +1,7 @@
-import { app, BrowserWindow, ipcMain } from 'electron'; // eslint-disable-line
+import { app, BrowserWindow, ipcMain, Menu } from 'electron'; // eslint-disable-line
 import { checkNewVersion, getGroups } from './server'
 
-// ipcMain
+const child_process = require('child_process')
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -15,6 +15,29 @@ const winURL = process.env.NODE_ENV === 'development'
   ? 'http://localhost:9080'
   : `file://${__dirname}/index.html`;
 
+// 复制功能
+const template = [
+  {
+    label: 'Application',
+    submenu: [
+      {
+        label: 'Quit',
+        accelerator: 'Command+Q',
+        click: function () {
+          app.quit()
+        }
+      }
+    ]
+  },
+  {
+    label: 'Edit',
+    submenu: [
+      {label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:'},
+      {label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:'}
+    ]
+  }
+]
+
 
 function createWindow() {
   /**
@@ -26,6 +49,8 @@ function createWindow() {
     width: 1800,
     webPreferences: {
       nodeIntegration: true,
+      // webSecurity 设置可以处理跨域请求 不需要修改服务器 非常棒
+      webSecurity: false
     },
   });
 
@@ -38,11 +63,10 @@ function createWindow() {
     mainWindow = null;
   });
 
-  // mainWindow.webContents.send('send2', 111);
+  // 复制粘贴
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template))
 
-  // mainWindow.webContents.on('checkVersion', () => {
-  //   console.log('检查版本 -- 检查版本 检查版本');
-  // });
+  // child_process.spawn('node', ['server/index.js'])
 }
 
 

@@ -6,9 +6,15 @@
     :row-class-name="tableRowClassName"
     >
     <el-table-column
-      prop="id"
-      label="id"
-      width="180">
+      prop="group"
+      label="分组"
+      width="120">
+      <template slot-scope="scope">
+        <span style="margin-left: 10px"> {{ 
+          (scope.row.groups && scope.row.groups > 0 && groups.find(({id}) => id == scope.row.groups)) 
+          ? groups.find(({id}) => id == scope.row.groups).name
+          : '本地' }} </span>
+      </template>
     </el-table-column>
     <el-table-column
       prop="title"
@@ -18,22 +24,23 @@
     <el-table-column
       prop="type"
       label="类型"
-      width="180">
+      width="80">
       <template slot-scope="scope">
         <span style="margin-left: 10px"> {{ Number(scope.row.type) ? 'mysql' : 'redis' }}</span>
       </template>
     </el-table-column>
     <el-table-column
       prop="address"
-      label="地址">
+      label="地址"
+      width="180">
     </el-table-column>
      <el-table-column
       fixed="right"
       label="操作"
       width="300">
       <template slot-scope="scope">
-        <el-button @click="linkServer(scope.row)" type="text" size="small">链接服务器</el-button>
-        <el-button @click="showDialog(scope.row)" type="text" size="small">编辑</el-button>
+        <el-button @click="linkServer(scope.row)" type="text" size="small">链接</el-button>
+        <el-button @click="editDialog(scope.row)" type="text" size="small">编辑</el-button>
         <el-button @click="deleteContent(scope.row)" type="text" size="small">删除该配置</el-button>
       </template>
       </el-table-column>
@@ -61,10 +68,9 @@ import { linkServer } from './action';
 
 export default {
   name: 'table',
-  props: ['tableData'],
+  props: ['tableData', 'groups'],
   data() {
     return {
-      // tableData: [],
       dialogTableVisible: false,
       dialogFormVisible: false,
       form: {
@@ -74,31 +80,36 @@ export default {
       },
     };
   },
+  mounted () {
+    // console.log(this.props.groups, 'cccccccccc')
+    
+  },
   methods: {
     // 显示
-    showDialog({
-      id, title, address,
+    editDialog({
+      id, title, address, groups
     }) {
       this.form.id = id;
       this.form.title = title;
       this.form.address = address;
+      this.form.groups = groups;
       this.dialogFormVisible = true;
     },
     // 确定修改
     editContent() {
-      const { id, address, title } = this.form;
+      const { id, address, title, groups } = this.form;
       this.dialogFormVisible = false;
       this.$emit('editContent', {
-        id, title, address,
+        id, title, address, groups
       });
     },
     // 删除
     deleteContent({
-      id, title, type, address,
+      id, title, type, address, groups
     }) {
       this.$emit('deleteContent', {
-        id, title, type, address,
-      });
+        id, title, type, address, groups
+      }); 
     },
     tableRowClassName({ row, rowIndex }) {
       console.log('row', row);
